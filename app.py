@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 
 # ============================================================
@@ -309,3 +310,128 @@ else:
 
 
     st.pyplot(fig2)
+
+    # ========================================================
+    # 9. MAPA GEOGRÁFICO
+    # ========================================================
+
+    st.subheader("Distribución geográfica de las solicitudes")
+
+    st.markdown(
+        """
+        El mapa muestra la distribución territorial de las solicitudes
+        correspondientes a los registros seleccionados mediante los filtros.
+
+        Las coordenadas utilizadas representan un punto de referencia de cada
+        departamento y no la ubicación exacta de los pacientes.
+        """
+    )
+
+# Agrupar las solicitudes por departamento
+mapa_departamentos = (
+    df_filtrado
+    .groupby(
+        ["departamento_residencia", "latitud", "longitud"]
+    )
+    .size()
+    .reset_index(name="cantidad_solicitudes")
+)
+
+fig_mapa = px.scatter_map(
+    mapa_departamentos,
+    lat="latitud",
+    lon="longitud",
+    size="cantidad_solicitudes",
+    hover_name="departamento_residencia",
+    hover_data={
+        "cantidad_solicitudes": True,
+        "latitud": False,
+        "longitud": False
+    },
+    size_max=50,
+    zoom=5,
+    center={
+        "lat": -32.8,
+        "lon": -56.0
+    },
+    height=600
+)
+
+fig_mapa.update_layout(
+    margin={"r": 0, "t": 0, "l": 0, "b": 0}
+)
+
+st.plotly_chart(
+    fig_mapa,
+    use_container_width=True
+)
+
+# ========================================================
+# 9. TOP 10 ÁREAS DE PRESTACIÓN
+# ========================================================
+
+st.subheader("Top 10 áreas de prestación")
+
+st.markdown(
+    """
+    El gráfico muestra las 10 áreas de prestación con mayor cantidad
+    de solicitudes dentro de los registros seleccionados.
+    """
+)
+
+top_10_areas = (
+    df_filtrado["area_prestacion"]
+    .value_counts()
+    .head(10)
+    .sort_values()
+)
+
+fig3, ax3 = plt.subplots(figsize=(10, 5))
+
+ax3.barh(
+    top_10_areas.index,
+    top_10_areas.values,
+    color="#000066"
+)
+
+ax3.set_title("Top 10 áreas de prestación por cantidad de solicitudes")
+ax3.set_xlabel("Cantidad de solicitudes")
+ax3.set_ylabel("Área de prestación")
+
+st.pyplot(fig3)
+
+# ========================================================
+# 10. TOP 20 PRESTACIONES
+# ========================================================
+
+st.subheader("Top 20 prestaciones más solicitadas")
+
+st.markdown(
+    """
+    El gráfico muestra las 20 prestaciones con mayor cantidad de solicitudes
+    dentro de los registros seleccionados.
+    """
+)
+
+top_20_prestaciones = (
+    df_filtrado["prestacion_desc"]
+    .value_counts()
+    .head(20)
+    .sort_values()
+)
+
+fig4, ax4 = plt.subplots(figsize=(10, 8))
+
+ax4.barh(
+    top_20_prestaciones.index,
+    top_20_prestaciones.values,
+    color="#000066"
+)
+
+ax4.set_title("Top 20 prestaciones por cantidad de solicitudes")
+ax4.set_xlabel("Cantidad de solicitudes")
+ax4.set_ylabel("Prestación")
+
+plt.tight_layout()
+
+st.pyplot(fig4)
