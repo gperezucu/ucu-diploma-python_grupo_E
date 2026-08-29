@@ -45,3 +45,8 @@ Se realizaron las siguientes tareas:
 - Montevideo concentra la mayor cantidad de solicitudes.
 - El grupo etario entre 31-45 años tiene un porcentaje levemente menor de aprobaciones frente a los otros grupos.
 - No se observan correlaciones lineales fuertes con la variable objetivo.
+
+## Enlaces de GitHub y APP
+
+-GitHub https://github.com/gperezucu/ucu-diploma-python_grupo_E
+-App    https://ucu-fnr-solicitudes-2024-2025-grupo-e.streamlit.app/
