@@ -3,6 +3,12 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import plotly.express as px
 
+st.set_page_config(
+    page_title="Dashboard FNR",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # ============================================================
 # 1. CARGA DE DATOS
@@ -18,7 +24,7 @@ df = pd.read_csv(
 # 2. ENCABEZADO DE LA APLICACIÓN
 # ============================================================
 
-st.title("Análisis de solicitudes del Fondo Nacional de Recursos")
+st.title("🏥Dashboard de solicitudes del FNR")
 
 st.markdown(
     """
@@ -26,7 +32,7 @@ st.markdown(
     de Recursos (FNR)** correspondientes a los años **2024 y 2025**.
 
     Los filtros disponibles permiten analizar dinámicamente la distribución
-    de las solicitudes según **edad, sexo y estado de la solicitud**.
+        de las solicitudes según **edad, sexo y estado de la solicitud**.
     """
 )
 
@@ -36,13 +42,6 @@ st.markdown(
 # ============================================================
 
 st.sidebar.markdown("## Filtros")
-
-st.sidebar.markdown(
-    """
-    Utilice los controles para seleccionar el subconjunto de datos
-    que desea analizar.
-    """
-)
 
 
 # ------------------------------------------------------------
@@ -114,7 +113,29 @@ if estado_seleccionado != "Todos":
         df_filtrado["estado_solicitud"] == estado_seleccionado
     ]
 
+st.subheader("Resumen general")
 
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric(
+    "Solicitudes",
+    f"{len(df_filtrado):,}".replace(",", ".")
+)
+
+col2.metric(
+    "Edad promedio",
+    f"{df_filtrado['edad_años'].mean():.1f} años"
+)
+
+col3.metric(
+    "Departamentos",
+    df_filtrado["departamento_residencia"].nunique()
+)
+
+col4.metric(
+    "Prestaciones",
+    df_filtrado["prestacion_desc"].nunique()
+)
 # ============================================================
 # 5. REGISTROS FILTRADOS
 # ============================================================
@@ -123,8 +144,7 @@ st.subheader("Registros filtrados")
 
 st.markdown(
     """
-    La siguiente tabla muestra una muestra de los registros que cumplen
-    con los filtros seleccionados.
+    La siguiente tabla muestra el detalle de los registros filtrados    
     """
 )
 
@@ -222,7 +242,6 @@ else:
     st.markdown(
         """
         El histograma representa la distribución de edades de los pacientes
-        después de aplicar los filtros seleccionados.
         """
     )
 
@@ -241,7 +260,7 @@ else:
 
 
     ax.set_title(
-        "Distribución de la edad de los pacientes"
+        "Distribución de edad de los pacientes"
     )
 
     ax.set_xlabel(
@@ -278,7 +297,7 @@ else:
     st.markdown(
         """
         Cada punto representa una edad y la cantidad de solicitudes
-        correspondientes a pacientes de esa edad dentro del conjunto filtrado.
+        correspondientes a pacientes de esa edad.
         """
     )
 
@@ -315,12 +334,11 @@ else:
     # 9. MAPA GEOGRÁFICO
     # ========================================================
 
-    st.subheader("Distribución geográfica de las solicitudes")
+    st.subheader("Distribución geográfica por departamento de las solicitudes")
 
     st.markdown(
         """
         El mapa muestra la distribución territorial de las solicitudes
-        correspondientes a los registros seleccionados mediante los filtros.
 
         Las coordenadas utilizadas representan un punto de referencia de cada
         departamento y no la ubicación exacta de los pacientes.
@@ -375,7 +393,7 @@ st.subheader("Top 10 áreas de prestación")
 st.markdown(
     """
     El gráfico muestra las 10 áreas de prestación con mayor cantidad
-    de solicitudes dentro de los registros seleccionados.
+    de solicitudes.
     """
 )
 
@@ -408,8 +426,7 @@ st.subheader("Top 20 prestaciones más solicitadas")
 
 st.markdown(
     """
-    El gráfico muestra las 20 prestaciones con mayor cantidad de solicitudes
-    dentro de los registros seleccionados.
+    El gráfico muestra las 20 prestaciones con mayor cantidad de solicitudes.
     """
 )
 
